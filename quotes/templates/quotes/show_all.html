@@ -1,0 +1,24 @@
+{% extends 'quotes/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content-section">
+    <h1>All Quotes by Steve Jobs</h1>
+    <div class="quotes-list">
+        {% for quote in quote %}
+            <p>{{ quote }}</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="content-section">
+    <h2>All Images of Steve Jobs</h2>
+    <div class="images-list">
+        {% for image_url in image %}
+            <div class="image-container">
+                <img src="{% static image_url %}" alt="Steve Jobs">
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

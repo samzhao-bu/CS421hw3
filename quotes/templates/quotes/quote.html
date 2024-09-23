@@ -1,0 +1,12 @@
+
+{% extends 'quotes/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="quote-container">
+        <img src="{% static image %}" alt="Quote image">
+        <p>{{ quote }}</p>
+    </div>
+{% endblock %}
+
+   

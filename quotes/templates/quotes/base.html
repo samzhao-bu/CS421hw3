@@ -1,0 +1,27 @@
+{% load static %}
+<html>
+    <head>
+        <title>Hello, world!</title>
+        <!-- <link rel="stylesheet" href="/static/styles.css"> -->
+        <link rel="stylesheet" href="{% static 'quotes/css/styles.css' %}" />
+        <!-- <link rel="stylesheet" href="/static/styles.css"> -->
+        <!-- <link rel="stylesheet" href="{% static 'styles.css' %}"> -->
+    </head>
+    <body>
+        <!-- <img src="{% static 'quotes/images/1.png' %}" alt="Descriptive text"> -->
+    <nav>
+        <ul>
+            <!-- <a href="/hw/">Home</a> -->
+            <!-- <a href="/hw/about">About</a> -->
+             <!-- use the scriptlet URL function to look up a URL by name -->
+            <a href="{% url 'quote' %}">Quote</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'show_all' %}">Show All</a>
+        </ul>
+    </nav>
+
+    {% block content %}
+    <!-- put the interesting (specific stuff) here -->
+    {% endblock %}
+    </body>
+</html>
