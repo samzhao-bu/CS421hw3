@@ -1,0 +1,18 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<h2>Order Confirmation</h2>
+<p>Thank you for your order! Here are the details:</p>
+<ul>
+    {% for item in items %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+<p>Special Instructions: {{ instructions }}</p>
+<p>Total Price: ${{ total_price }}</p>
+<p>Your order will be ready by approximately {{ ready_time }}.</p>
+<p><strong>Customer Info:</strong><br>
+    Name: {{ name }}<br>
+    Phone: {{ phone }}<br>
+    Email: {{ email }}</p>
+{% endblock %}

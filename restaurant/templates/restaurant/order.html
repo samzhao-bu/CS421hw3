@@ -1,0 +1,27 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<form method="post" action="{% url 'confirmation' %}">
+    {% csrf_token %}
+    <h2>Place an Order</h2>
+    <fieldset>
+        <legend>Select your items:</legend>
+        <label><input type="checkbox" name="item" value="Regular Falafel $4"> Regular Falafel $4</label><br>
+        <label><input type="checkbox" name="item" value="Big Falafel $5"> Big Falafel $5</label><br>
+        <label><input type="checkbox" name="item" value="Very Big Falafel $6"> Very Big Falafel $6</label><br>
+        <label><input type="checkbox" name="item" value="Chips $2"> Chips $2</label><br>
+        <label><input type="checkbox" name="item" value="{{ daily_special }}"> Today's Special: {{ daily_special }}</label>
+    </fieldset>
+    <fieldset>
+        <legend>Special Instructions</legend>
+        <textarea name="instructions" rows="3" cols="50" placeholder="Please share any special instructions:"></textarea>
+    </fieldset>
+    <fieldset>
+        <legend>Customer Information</legend>
+        <label>Name: <input type="text" name="name"></label><br>
+        <label>Phone: <input type="text" name="phone"></label><br>
+        <label>Email: <input type="email" name="email"></label>
+    </fieldset>
+    <input type="submit" value="Place your order!">
+</form>
+{% endblock %}
