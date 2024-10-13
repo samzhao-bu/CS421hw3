@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'mini_fb/css/style.css' %}">
+    <a href="{% url 'create_profile' %}">Create New Profile</a>
+    <a href="{% url 'create_status' profile.pk %}">Post a New Status</a>
     
     <title>Mini Facebook</title>
 </head>
