@@ -13,14 +13,14 @@
     </thead>
     <tbody>
         {% for profile in profiles %}
-        <tr>
-            <td>{{ profile.first_name }}</td>
-            <td>{{ profile.last_name }}</td>
-            <td>{{ profile.city }}</td>
-            <td>{{ profile.email }}</td>
-            <td><img src="{{ profile.profile_image_url }}" alt="Profile Image"></td>
-        </tr>
-        {% endfor %}
+    <tr>
+        <td><a href="{% url 'show_profile' profile.pk %}">{{ profile.first_name }}</a></td>
+        <td>{{ profile.last_name }}</td>
+        <td>{{ profile.city }}</td>
+        <td>{{ profile.email }}</td>
+        <td><a href="{% url 'show_profile' profile.pk %}"><img src="{{ profile.profile_image_url }}" alt="Profile Image"></a></td>
+    </tr>
+{% endfor %}
     </tbody>
 </table>
 {% endblock %}
