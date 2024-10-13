@@ -6,6 +6,7 @@
     <img src="{{ profile.profile_image_url }}" alt="Profile Image" style="width: 300px; height: auto;">
     <p><strong>City:</strong> {{ profile.city }}</p>
     <p><strong>Email:</strong> {{ profile.email }}</p>
+    <a href="{% url 'create_status' profile.pk %}">Post a New Status</a>
 </div>
 <div class="status-messages">
     <h2>Status Messages:</h2>
