@@ -8,14 +8,18 @@
     <p><strong>Email:</strong> {{ profile.email }}</p>
     <a href="{% url 'create_status' profile.pk %}">Post a New Status</a>
 </div>
+
 <div class="status-messages">
     <h2>Status Messages:</h2>
-    {% for message in profile.get_status_messages %}
+    {% for status in profile.get_status_messages %}
     <div class="message">
-        <p>{{ message.timestamp }}: {{ message.message }}</p>
+        <p>{{ status.timestamp }}: {{ status.message }}</p>
+        {% for img in status.get_images %}
+            <img src="{{ img.image_file.url }}" alt="Status image" style="max-width: 200px; height: auto;">
+        {% endfor %}
     </div>
     {% empty %}
-    <p>No status messages.</p>
+        <p>No status messages.</p>
     {% endfor %}
 </div>
 {% endblock %}

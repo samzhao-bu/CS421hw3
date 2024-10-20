@@ -1,9 +1,10 @@
 {% extends 'mini_fb/base.html' %}
 
 {% block content %}
-<form method="post" action="">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
+    <input type="file" name="files" multiple>
     <button type="submit">Post Status</button>
 </form>
 {% endblock %}

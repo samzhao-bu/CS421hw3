@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from .forms import CreateProfileForm
 from .forms import CreateStatusMessageForm
-from .models import Profile, StatusMessage
+from .models import Profile, StatusMessage, Image
 
 class ShowAllProfilesView(ListView):
     model = Profile
@@ -36,6 +36,12 @@ class CreateStatusMessageView(CreateView):
 
     def form_valid(self, form):
         form.instance.profile = Profile.objects.get(pk=self.kwargs['pk'])
+        self.object = form.save(commit=False)
+        self.object.profile = Profile.objects.get(pk=self.kwargs['pk'])
+        self.object.save()
+        files = self.request.FILES.getlist('files')
+        for file in files:
+            Image.objects.create(status_message=self.object, image_file=file)
         return super().form_valid(form)
 
     def get_success_url(self):
