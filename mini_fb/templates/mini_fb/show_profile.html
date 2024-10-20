@@ -7,6 +7,7 @@
     <p><strong>City:</strong> {{ profile.city }}</p>
     <p><strong>Email:</strong> {{ profile.email }}</p>
     <a href="{% url 'create_status' profile.pk %}">Post a New Status</a>
+    <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
 </div>
 
 <div class="status-messages">
@@ -14,6 +15,8 @@
     {% for status in profile.get_status_messages %}
     <div class="message">
         <p>{{ status.timestamp }}: {{ status.message }}</p>
+        <a href="{% url 'update_status' status.pk %}">Update</a>
+        <a href="{% url 'delete_status' status.pk %}">Delete</a>
         {% for img in status.get_images %}
             <img src="{{ img.image_file.url }}" alt="Status image" style="max-width: 200px; height: auto;">
         {% endfor %}

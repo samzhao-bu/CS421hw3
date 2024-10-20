@@ -1,10 +1,14 @@
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
+from .models import Profile
+from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from .forms import CreateProfileForm
-from .forms import CreateStatusMessageForm
+from .forms import CreateStatusMessageForm, UpdateStatusMessageForm
 from .models import Profile, StatusMessage, Image
+from .forms import UpdateProfileForm
+from django.views.generic.edit import DeleteView
 
 class ShowAllProfilesView(ListView):
     model = Profile
@@ -46,3 +50,27 @@ class CreateStatusMessageView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('show_profile', kwargs={'pk': self.kwargs['pk']})
+
+class UpdateProfileView(UpdateView):
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = 'mini_fb/update_profile_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('show_profile', kwargs={'pk': self.object.pk})
+
+class DeleteStatusMessageView(DeleteView):
+    model = StatusMessage
+    template_name = 'mini_fb/delete_status_form.html'
+    context_object_name = 'status'
+
+    def get_success_url(self):
+        return reverse_lazy('show_profile', args=[self.object.profile.pk])
+
+class UpdateStatusMessageView(UpdateView):
+    model = StatusMessage
+    form_class = UpdateStatusMessageForm
+    template_name = 'mini_fb/update_status_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('show_profile', args=[self.object.profile.pk])
