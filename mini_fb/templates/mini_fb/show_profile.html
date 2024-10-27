@@ -25,4 +25,21 @@
         <p>No status messages.</p>
     {% endfor %}
 </div>
+
+<div class="friends-list">
+    <h2>Friends:</h2>
+    <ul>
+        {% for friend in profile.get_friends %}
+        <li>
+            <a href="{% url 'show_profile' friend.pk %}">
+                <img src="{{ friend.profile_image_url }}" alt="{{ friend.first_name }} {{ friend.last_name }}" style="width: 50px; height: auto; border-radius: 50%;">
+                {{ friend.first_name }} {{ friend.last_name }}
+            </a>
+        </li>
+        {% empty %}
+        <li>No friends yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+<a href="{% url 'friend_suggestions' pk=profile.pk %}" class="btn btn-primary">View Friend Suggestions</a>
 {% endblock %}

@@ -18,6 +18,38 @@ class Profile(models.Model):
     def get_absolute_url(self):
         return reverse('show_profile', args=[str(self.pk)])
     
+    def get_friends(self):
+        friends_list = set()
+        friends_as_profile1 = self.friends_from_profile1.all()
+        friends_as_profile2 = self.friends_from_profile2.all()
+
+        for friend in friends_as_profile1:
+            friends_list.add(friend.profile2)
+        for friend in friends_as_profile2:
+            friends_list.add(friend.profile1)
+        return list(friends_list)
+    
+    def add_friend(self, other):
+        if self == other:
+            return "Cannot friend yourself."
+        
+
+        existing_friendship = Friend.objects.filter(
+            (models.Q(profile1=self) & models.Q(profile2=other)) | 
+            (models.Q(profile1=other) & models.Q(profile2=self))
+        )
+        if existing_friendship.exists():
+            return "Friendship already exists."
+        Friend.objects.create(profile1=self, profile2=other)
+        return "Friendship created successfully."
+    
+    def get_friend_suggestions(self):
+        all_profiles = Profile.objects.exclude(id=self.id)  
+        friends = self.get_friends()
+        friend_ids = [friend.id for friend in friends]
+        suggestions = all_profiles.exclude(id__in=friend_ids)
+        return suggestions
+    
 class StatusMessage(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     message = models.TextField()
@@ -37,3 +69,11 @@ class Image(models.Model):
     def __str__(self):
         return f"Image for {self.status_message} uploaded at {self.timestamp}"
 
+
+class Friend(models.Model):
+    profile1 = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='friends_from_profile1')
+    profile2 = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='friends_from_profile2')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.profile1.first_name} {self.profile1.last_name} & {self.profile2.first_name} {self.profile2.last_name}'

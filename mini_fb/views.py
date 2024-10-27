@@ -2,6 +2,7 @@ from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from .models import Profile
+from django.views import View
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from .forms import CreateProfileForm
@@ -9,6 +10,7 @@ from .forms import CreateStatusMessageForm, UpdateStatusMessageForm
 from .models import Profile, StatusMessage, Image
 from .forms import UpdateProfileForm
 from django.views.generic.edit import DeleteView
+from django.shortcuts import redirect, get_object_or_404
 
 class ShowAllProfilesView(ListView):
     model = Profile
@@ -74,3 +76,18 @@ class UpdateStatusMessageView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('show_profile', args=[self.object.profile.pk])
+
+class CreateFriendView(View):
+    def get(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, pk=kwargs['pk'])
+        other_profile = get_object_or_404(Profile, pk=kwargs['other_pk'])
+        profile.add_friend(other_profile)
+        return redirect('friend_suggestions', pk=profile.pk)
+class ShowFriendSuggestionsView(DetailView):
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['suggestions'] = self.object.get_friend_suggestions()
+        return context
