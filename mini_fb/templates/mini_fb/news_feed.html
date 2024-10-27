@@ -1,0 +1,17 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<h1>News Feed</h1>
+<div class="news-feed">
+    {% for status in news_feed %}
+    <div class="status-message">
+        <img src="{{ status.profile.profile_image_url }}" alt="{{ status.profile.first_name }}" style="width: 50px; height: 50px; border-radius: 50%;">
+        <strong>{{ status.profile.first_name }} {{ status.profile.last_name }}</strong>
+        <p>{{ status.message }}</p>
+        <p><small>{{ status.timestamp }}</small></p>
+    </div>
+    {% empty %}
+    <p>No news to show.</p>
+    {% endfor %}
+</div>
+{% endblock %}

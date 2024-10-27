@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'mini_fb/css/styles.css' %}">
-    <a href="{% url 'create_profile' %}">Create New Profile</a>
-    
     <title>Mini Facebook</title>
 </head>
 <body>
     <header>
-        <!-- Header content here -->
+        <a href="{% url 'create_profile' %}" class="btn btn-create">Create New Profile</a>
+        <a href="{% url 'show_all_profiles' %}" class="btn btn-create">Show ALL Profiles</a>
     </header>
     <footer>
         <!-- Footer content here -->

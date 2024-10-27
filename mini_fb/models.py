@@ -50,6 +50,12 @@ class Profile(models.Model):
         suggestions = all_profiles.exclude(id__in=friend_ids)
         return suggestions
     
+    def get_news_feed(self):
+        friends = self.get_friends()
+        friend_ids = [friend.pk for friend in friends]
+        friend_ids.append(self.pk) 
+        return StatusMessage.objects.filter(profile__pk__in=friend_ids).order_by('-timestamp')
+    
 class StatusMessage(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     message = models.TextField()
@@ -77,3 +83,4 @@ class Friend(models.Model):
 
     def __str__(self):
         return f'{self.profile1.first_name} {self.profile1.last_name} & {self.profile2.first_name} {self.profile2.last_name}'
+

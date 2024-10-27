@@ -1,97 +1,60 @@
-/* Basic reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
+    margin: 0;
+    padding: 0;
     background-color: #f4f4f4;
-    padding: 20px;
+    color: #333;
 }
 
 header, footer {
-    background: #0056b3;
-    color: #ffffff;
     text-align: center;
-    padding: 10px 0;
-}
-
-header a, footer a {
-    color: #ffffff;
-    text-decoration: none;
+    padding: 20px 10px;
+    background-color: #003366;
+    color: white;
 }
 
 main {
-    max-width: 800px;
-    margin: 20px auto;
     padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.profile {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px 0 rgba(0,0,0,0.1);
-}
-
-a {
-    color: #0056b3;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    border: 1px solid #dddddd;
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #0056b3;
-    color: white;
-}
-
-table img {
-    max-width: 100%; 
-    height: auto;
-}
-table tr td img {
-    width: 100px; 
-    height: auto; 
-    border-radius: 50%;
-}
-
-form {
-    background: #ffffff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-input[type="text"], input[type="email"], input[type="file"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-top: 8px;
-    margin-bottom: 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+.profile img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0056b3;
 }
 
-input[type="submit"] {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
+.profile h1 {
+    margin: 10px 0 5px;
 }
 
-input[type="submit"]:hover {
-    background-color: #218838;
+.profile p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.status-messages, .friends-list {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.status-messages h2, .friends-list h2 {
+    color: #0056b3;
 }
 
 .message {
@@ -104,6 +67,150 @@ input[type="submit"]:hover {
     border-bottom: none;
 }
 
-img {
-    border-radius: 4px;
+.message img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin-top: 10px;
+}
+
+.friends-list ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.friends-list li {
+    margin: 10px;
+    text-align: center;
+}
+
+.friends-list img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    display: inline-block;
+    margin: 5px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+}
+body {
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; 
+}
+
+.header, .footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #003366; 
+    color: white;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    gap: 20px; 
+    padding: 20px;
+}
+
+.profile-card {
+    background-color: white;
+    border: 2px solid #003366; 
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    transition: transform 0.2s; 
+}
+
+.profile-card:hover {
+    transform: scale(1.05); 
+}
+
+.profile-card a {
+    color: inherit;
+    text-decoration: none; 
+}
+
+.profile-image {
+    width: 100%; 
+    height: 200px; 
+    object-fit: cover; 
+}
+
+.profile-info {
+    padding: 10px;
+    text-align: center; 
+}
+
+.profile-info h2 {
+    margin-top: 0;
+}
+
+.profile-info p {
+    margin: 5px 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #0056b3; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #003880; 
+}
+
+.nav-link {
+    padding: 10px 15px;
+    color: #0056b3;
+    text-decoration: none;
+    font-size: 16px;
+    display: inline-block;
+}
+
+header {
+    background-color: #f8f9fa; 
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+
+nav {
+    margin-top: 10px;
 }
