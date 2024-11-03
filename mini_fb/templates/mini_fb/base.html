@@ -10,11 +10,16 @@
 <body>
     <header>
         <a href="{% url 'create_profile' %}" class="btn btn-create">Create New Profile</a>
-        <a href="{% url 'show_all_profiles' %}" class="btn btn-create">Show ALL Profiles</a>
+        <a href="{% url 'show_all_profiles' %}" class="btn btn-create">Show All Profiles</a>
         {% if user.is_authenticated %}
-            <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+            <a href="{% url 'show_profile' user.profile.pk %}" class="btn btn-create">My Profile</a>
+            <p>Welcome, {{ user.username }}!</p>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-create">Logout</button>
+            </form>
         {% else %}
-            <p><a href="{% url 'login' %}">Login</a></p>
+            <a href="{% url 'login' %}" class="btn btn-create">Login</a>
         {% endif %}
     </header>
     <main>
@@ -22,7 +27,6 @@
         {% endblock %}
     </main>
     <footer>
-        <!-- Footer content -->
     </footer>
 </body>
 </html>

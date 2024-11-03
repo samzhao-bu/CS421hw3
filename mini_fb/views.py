@@ -13,6 +13,7 @@ from .models import Profile, StatusMessage, Image
 from .forms import UpdateProfileForm, RegisterForm
 from django.views.generic.edit import DeleteView
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.forms import UserCreationForm
 
 class ShowAllProfilesView(ListView):
     model = Profile
@@ -24,11 +25,28 @@ class ShowProfilePageView(DetailView):
     template_name = 'mini_fb/show_profile.html'
     context_object_name = 'profile'
 
+
 class CreateProfileView(CreateView):
     model = Profile
     form_class = CreateProfileForm
     template_name = 'mini_fb/create_profile_form.html'
+    success_url = reverse_lazy('show_all_profiles')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_form'] = UserCreationForm()
+        return context
+    
+    def form_valid(self, form):
+        user_form = UserCreationForm(self.request.POST)
+
+        if user_form.is_valid():
+            user = user_form.save()
+            form.instance.user = user 
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+    
     def get_success_url(self):
         return reverse_lazy('show_profile', kwargs={'pk': self.object.pk})
 
@@ -39,13 +57,13 @@ class CreateStatusMessageView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(pk=self.kwargs['pk'])
+        context['profile'] = Profile.objects.get(user=self.request.user)
         return context
-
+    
     def form_valid(self, form):
-        form.instance.profile = Profile.objects.get(pk=self.kwargs['pk'])
+        form.instance.profile = Profile.objects.get(user=self.request.user)
         self.object = form.save(commit=False)
-        self.object.profile = Profile.objects.get(pk=self.kwargs['pk'])
+        self.object.profile = form.instance.profile
         self.object.save()
         files = self.request.FILES.getlist('files')
         for file in files:
@@ -53,7 +71,7 @@ class CreateStatusMessageView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('show_profile', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('show_profile', kwargs={'pk': self.request.user.profile.pk})
 
 class UpdateProfileView(UpdateView):
     model = Profile
@@ -62,6 +80,9 @@ class UpdateProfileView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('show_profile', kwargs={'pk': self.object.pk})
+    
+    def get_object(self, queryset=None):
+        return self.request.user.profile
 
 class DeleteStatusMessageView(DeleteView):
     model = StatusMessage
@@ -77,14 +98,24 @@ class UpdateStatusMessageView(UpdateView):
     template_name = 'mini_fb/update_status_form.html'
 
     def get_success_url(self):
+
         return reverse_lazy('show_profile', args=[self.object.profile.pk])
+    
+    # def get_object(self, queryset=None):
+    #     return self.request.user.profile
 
 class CreateFriendView(View):
     def get(self, request, *args, **kwargs):
-        profile = get_object_or_404(Profile, pk=kwargs['pk'])
+        # profile = get_object_or_404(Profile, pk=kwargs['pk'])
         other_profile = get_object_or_404(Profile, pk=kwargs['other_pk'])
-        profile.add_friend(other_profile)
-        return redirect('friend_suggestions', pk=profile.pk)
+        user_profile = request.user.profile
+        user_profile.add_friend(other_profile)
+        # return redirect('friend_suggestions', pk=profile.pk)
+        return redirect('show_profile')
+    
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
 class ShowFriendSuggestionsView(DetailView):
     model = Profile
     template_name = 'mini_fb/friend_suggestions.html'
@@ -93,6 +124,8 @@ class ShowFriendSuggestionsView(DetailView):
         context = super().get_context_data(**kwargs)
         context['suggestions'] = self.object.get_friend_suggestions()
         return context
+    def get_object(self, queryset=None):
+        return self.request.user.profile
     
 class ShowNewsFeedView(DetailView):
     model = Profile
@@ -103,6 +136,9 @@ class ShowNewsFeedView(DetailView):
         profile = self.get_object()
         context['news_feed'] = profile.get_news_feed()
         return context
+    
+    def get_object(self, queryset=None):
+        return self.request.user.profile
     
 
 def register(request):

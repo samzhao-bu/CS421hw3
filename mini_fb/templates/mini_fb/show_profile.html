@@ -7,12 +7,13 @@
     <p><strong>City:</strong> {{ profile.city }}</p>
     <p><strong>Email:</strong> {{ profile.email }}</p>
     {% if user.is_authenticated and profile.user == user %}
-        <a href="{% url 'create_status' profile.pk %}">Post a New Status</a>
-        <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
-        <a href="{% url 'friend_suggestions' pk=profile.pk %}" class="btn btn-primary">View Friend Suggestions</a>
+        <a href="{% url 'create_status' %}" class="btn btn-create">Post a New Status</a>
+        <a href="{% url 'update_profile' %}" class="btn btn-create">Update Profile</a>
+        <a href="{% url 'friend_suggestions'%}" class="btn btn-primary">View Friend Suggestions</a>
+        <a href="{% url 'news_feed'%}" class="btn btn-info">View News Feed</a>
     {% else %}
         <p>You must be logged in to edit your profile or post status updates.</p>
-        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'login' %}" class="btn btn-create">Login</a>
     {% endif %}
 </div>
 
@@ -22,8 +23,8 @@
     <div class="message">
         <p>{{ status.timestamp }}: {{ status.message }}</p>
         {% if user.is_authenticated and profile.user == user %}
-            <a href="{% url 'update_status' status.pk %}">Update</a>
-            <a href="{% url 'delete_status' status.pk %}">Delete</a>
+            <a href="{% url 'update_status' status.pk %}" class="btn btn-create">Update</a>
+            <a href="{% url 'delete_status' status.pk %}" class="btn btn-create">Delete</a>
         {% endif %}
         {% for img in status.get_images %}
             <img src="{{ img.image_file.url }}" alt="Status image" style="max-width: 200px; height: auto;">
@@ -50,5 +51,5 @@
     </ul>
 </div>
 
-<a href="{% url 'news_feed' pk=profile.pk %}" class="btn btn-info">View News Feed</a>
+<!-- <a href="{% url 'news_feed'%}" class="btn btn-info">View News Feed</a> -->
 {% endblock %}
