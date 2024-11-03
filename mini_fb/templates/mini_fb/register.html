@@ -1,0 +1,10 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<h1>Register for an Account</h1>
+<form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+{% endblock %}
