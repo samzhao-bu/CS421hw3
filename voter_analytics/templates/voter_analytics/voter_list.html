@@ -1,0 +1,30 @@
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<h2>Voter List</h2>
+<form method="get" action="">
+    <select name="party">
+        <option value="">Select a Party</option>
+        {% for party in unique_parties %}
+        <option value="{{ party }}" {% if request.GET.party == party %}selected{% endif %}>
+            {{ party }}
+        </option>
+        {% endfor %}
+    </select>
+    
+    Minimum Date of Birth: <input type="date" name="min_dob">
+    Maximum Date of Birth: <input type="date" name="max_dob">
+    Voter Score: <input type="number" name="score">
+    Voted in 2020 State: <input type="checkbox" name="v20state" value="Y"> Yes
+    <input type="submit" value="Filter">
+</form>
+<ul>
+    {% for voter in voters %}
+    <li>
+        <a href="{% url 'voter' voter.pk %}">{{ voter.first_name }} {{ voter.last_name }}</a> -
+        {{ voter.street_number }} {{ voter.street_name }}, DOB: {{ voter.date_of_birth }},
+        Party: {{ voter.party_affiliation }}, Score: {{ voter.voter_score }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

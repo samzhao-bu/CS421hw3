@@ -1,0 +1,160 @@
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+    color: #f0f0f0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Header and Footer */
+header, footer {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+    color: #f0f0f0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    margin-top: 20px;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Form Styling */
+form {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    margin-bottom: 30px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+form input, form select, form button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f0f0;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s, border 0.3s;
+}
+
+form input:focus, form select:focus, form button:focus {
+    border-color: #5c67f2;
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+form button {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    border: none;
+}
+
+form button:hover {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    transform: translateY(-3px);
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.card-header {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.card-body {
+    color: #d0d0d0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Fancy Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f1c2c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6a11cb;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2575fc;
+}
+
+/* Animations */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px #6a11cb, 0 0 10px #2575fc;
+    }
+    100% {
+        box-shadow: 0 0 20px #6a11cb, 0 0 30px #2575fc;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header, footer {
+        padding: 10px;
+    }
+}

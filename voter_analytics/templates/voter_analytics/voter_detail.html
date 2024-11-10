@@ -1,0 +1,19 @@
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<h2>{{ voter.first_name }} {{ voter.last_name }}</h2>
+<p>Address: {{ voter.street_number }} {{ voter.street_name }}</p>
+<p>Date of Birth: {{ voter.date_of_birth }}</p>
+<p>Date of Registration: {{ voter.date_of_registration }}</p>
+<p>Party Affiliation: {{ voter.party_affiliation }}</p>
+<p>Precinct Number: {{ voter.precinct_number }}</p>
+<p>Voter Score: {{ voter.voter_score }}</p>
+<p>Voted in 2020 State Election: {{ voter.v20state }}</p>
+<p>Voted in 2021 Town: {{ voter.v21town }}</p>
+<!-- Add additional fields as needed -->
+
+<!-- Google Maps Link -->
+<p>Map: <a href="https://www.google.com/maps/search/?api=1&query={{ voter.street_number }}+{{ voter.street_name }}" target="_blank">View on Map</a></p>
+
+<a href="{% url 'voters' %}">Back to Voter List</a>
+{% endblock %}

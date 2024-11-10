@@ -1,0 +1,25 @@
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<h1>Voter Data Graphs</h1>
+<form method="get" action="">
+    <select name="party">
+        <option value="">Select a Party</option>
+        {% for party in unique_parties %}
+        <option value="{{ party }}" {% if request.GET.party == party %}selected{% endif %}>
+            {{ party }}
+        </option>
+        {% endfor %}
+    </select>
+    Minimum Date of Birth: <input type="date" name="min_dob" value="{{ request.GET.min_dob }}">
+    Maximum Date of Birth: <input type="date" name="max_dob" value="{{ request.GET.max_dob }}">
+    Voter Score: <input type="number" name="score" value="{{ request.GET.score }}">
+    Voted in 2020 State: <input type="checkbox" name="v20state" value="Y" {% if request.GET.v20state == 'Y' %}checked{% endif %}> Yes
+    <input type="submit" value="Filter">
+</form>
+
+<div>{{ birth_histogram|safe }}</div>
+<div>{{ party_pie_chart|safe }}</div>
+<div>{{ elections_bar_chart|safe }}</div>
+
+{% endblock %}
