@@ -1,0 +1,15 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>Login</h1>
+
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="next" value="{% url 'restaurant_list' %}">
+    <button type="submit">Login</button>
+  </form>
+
+<hr>
+<p>Don't have an account yet? <a href="{% url 'register' %}">Create your profile here</a>.</p>
+{% endblock %}

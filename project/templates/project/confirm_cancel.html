@@ -1,0 +1,11 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h2>Confirm Cancellation</h2>
+<p>Are you sure you want to cancel this reservation?</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Confirm Cancel" class="btn btn-danger">
+    <a href="{% url 'user_reservations' %}">Back to Reservations</a>
+</form>
+{% endblock %}
