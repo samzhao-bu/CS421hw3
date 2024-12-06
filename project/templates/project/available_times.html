@@ -5,8 +5,23 @@
 
 <!-- Date Filter Form -->
 <form method="get" action="">
-    <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}" required>
-    <input type="time" name="selected_time" value="{{ request.GET.selected_time|default:'' }}" required>
+    <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}">
+    <select name="selected_time">
+        {% for hour in hours_list %}
+        <option value="{{ hour }}" {% if request.GET.selected_time == hour %}selected{% endif %}>
+            {% with hour|slice:":2" as hour_int %}
+                {% if hour_int|add:"0"|slice:":2" < 12 %}
+                    {{ hour_int }} : {{ hour|slice:"3:" }} AM
+                {% else %}
+                    {{ hour_int }} : {{ hour|slice:"3:" }} PM
+                {% endif %}
+            {% endwith %}
+        </option>
+        {% endfor %}
+    </select>
+    
+    
+    
     <button type="submit">Filter by Date and Time</button>
 </form>
 
@@ -16,7 +31,7 @@
         {% csrf_token %}
         {{ item.form.number_of_seats.as_hidden }}
         <input type="hidden" name="available_time_id" value="{{ item.time.id }}">
-        <p>{{ item.time.available_time }} - {{ item.time.seats_available }} seats available</p>
+        <p>{{ item.time.available_time|time:"g:i A" }} - {{ item.time.seats_available }} seats available</p>
         <button type="submit">Book Now</button>
         {% if item.form.errors %}
             <div class="form-errors">

@@ -33,35 +33,39 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Generate hours list for the time dropdown
+        hours_list = [f"{hour:02}:00" for hour in range(8, 23)]  # This is just a basic hour list (8 AM - 10 PM)
+        context['hours_list'] = hours_list
+
         selected_date = self.request.GET.get('selected_date')
         selected_time = self.request.GET.get('selected_time')
 
         if selected_date and selected_time:
             selected_date = parse_date(selected_date)
-            selected_time = parse_time(selected_time)
-            selected_datetime = datetime.datetime.combine(selected_date, selected_time)
+            selected_time = datetime.datetime.strptime(selected_time, "%H:%M").time()  # Parse the selected time
 
-            # Round down to the nearest hour if necessary
-            selected_datetime = selected_datetime.replace(minute=0, second=0, microsecond=0)
+            # Combine date and time into a full datetime object
+            start_datetime = datetime.datetime.combine(selected_date, selected_time)
+            end_datetime = start_datetime + datetime.timedelta(hours=1)  # Assuming a 1-hour slot
 
-            # Filter times within an hour range of selected time
-            start_time = selected_datetime
-            end_time = start_time + timedelta(hours=1)
-
+            # Now filter available times using this datetime range
             times = AvailableTime.objects.filter(
                 restaurant=self.object,
                 seats_available__gt=0,
                 is_reserved=False,
-                available_time__range=(start_time, end_time)
+                available_time__range=(start_datetime, end_datetime)
             ).order_by('available_time')
-        else:
-            times = AvailableTime.objects.none()  # Return no times if date or time not selected
 
-        context['available_times_forms'] = [
-            {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
-        ]
+            context['available_times_forms'] = [
+                {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
+            ]
+        else:
+            context['available_times_forms'] = []
+
         return context
-    
+
+        
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = AvailableTimeForm(request.POST)
