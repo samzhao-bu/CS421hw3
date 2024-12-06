@@ -1,36 +1,35 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
-<h1>Restaurants</h1>
-
-<!-- Category Links -->
-<p>Categories:</p>
-<ul>
-    {% for value, name in category_choices %}
-        <li><a href="?category={{ value }}">{{ name }}</a></li>
-    {% endfor %}
-</ul>
-
-<!-- Search Form -->
-<form method="get" action="">
-    <input type="text" name="search_name" placeholder="Search by restaurant name..." value="{{ request.GET.search_name|default:'' }}">
-    <button type="submit">Search</button>
-</form>
-
-<!-- List Restaurants -->
-<ul>
-    {% for restaurant in restaurants %}
-    <li>
-        <a href="{% url 'available_times' restaurant.pk %}">
-            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.restaurant_name }}" style="width:100px; height:auto;">
-        </a>
-        <h3>{{ restaurant.restaurant_name }}</h3>
-        <p>{{ restaurant.description }}</p>
-        <p>Category: {{ restaurant.get_category_display }}</p>
-    </li>
-    {% endfor %}
-</ul>
+<div class="content-wrapper">
+    <div class="restaurant-listing">
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card">
+            <a href="{% url 'available_times' restaurant.pk %}">
+                <img src="{{ restaurant.image.url }}" alt="{{ restaurant.restaurant_name }}" class="restaurant-image">
+            </a>
+            <div class="restaurant-info">
+                <h2>{{ restaurant.restaurant_name }}</h2>
+                <p class="reviews">{{ restaurant.reviews_count }} reviews - {{ restaurant.rating }} stars</p>
+                <p class="description">{{ restaurant.description }}</p>
+                <div class="times">
+                    <button>5:00 PM</button>
+                    <button>6:00 PM</button>
+                    <button>7:00 PM</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="map-or-categories">
+        <h3>Categories</h3>
+        <ul>
+            {% for value, name in category_choices %}
+            <li><a href="?category={{ value }}">{{ name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}
-
 
 

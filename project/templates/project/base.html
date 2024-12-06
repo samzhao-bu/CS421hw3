@@ -4,17 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Replace 'mini_fb/css/styles.css' with the correct path for your CSS file -->
     
+    <link rel="stylesheet" href="{% static 'project/css/styles.css' %}">
     <title>Restaurant Reservation System</title>
 </head>
 <body>
     <header>
-        <!-- Update the URLs to reflect the actual URLs used in your app -->
+        
         <a href="{% url 'restaurant_list' %}" class="btn btn-create">View Restaurants</a>
         {% if user.is_authenticated %}
-            <!-- Assuming 'show_profile' is a valid URL name in your app that shows the user's profile -->
-            <!-- <a href="{% url 'show_profile' user.id %}" class="btn btn-create">My Profile</a> -->
             <p>Welcome, {{ user.username }}!</p>
             <a href="{% url 'user_reservations' %}">My Reservations</a>
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
@@ -23,7 +21,7 @@
             </form>
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-create">Login</a>
-            <!-- Assuming you have a registration view -->
+    
             <a href="{% url 'register' %}" class="btn btn-create">Register</a>
         {% endif %}
     </header>

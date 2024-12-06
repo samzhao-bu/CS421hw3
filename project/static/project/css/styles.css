@@ -1,0 +1,74 @@
+
+.content-wrapper {
+    display: flex;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.restaurant-listing {
+    flex: 3;
+    padding: 20px;
+}
+
+.restaurant-card {
+    display: flex;
+    background: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.restaurant-card img {
+    width: 150px;  /* Adjusted size */
+    height: 100px;  /* Adjusted size, maintaining aspect ratio */
+    object-fit: cover;  /* Ensures the image covers the given dimension without stretching */
+    border-radius: 5px 0 0 5px;
+}
+
+.restaurant-info {
+    padding: 10px;
+    width: calc(100% - 150px);  /* Adjusted width to take image adjustment into account */
+}
+
+h2, .reviews, .description {
+    margin: 5px 0;
+}
+
+.times button {
+    margin-right: 10px;
+    padding: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.times button:hover {
+    background-color: #0056b3;
+}
+
+.map-or-categories {
+    flex: 1;
+    padding: 20px;
+    background: #f8f8f8;
+    border-left: 1px solid #ccc;
+}
+
+.map-or-categories ul {
+    list-style: none;
+    padding: 0;
+}
+
+.map-or-categories li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 8px;
+    transition: background-color 0.3s;
+}
+
+.map-or-categories li a:hover {
+    background-color: #eaeaea;
+}
