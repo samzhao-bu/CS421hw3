@@ -1,4 +1,35 @@
 
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header .auth-links {
+    display: flex;
+    align-items: center;
+}
+
+header .auth-links a,
+header .auth-links form {
+    margin-left: 10px;
+}
+
+header .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+header .btn:hover {
+    background-color: #0056b3;
+}
+
+
 .content-wrapper {
     display: flex;
     max-width: 1200px;

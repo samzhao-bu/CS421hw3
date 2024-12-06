@@ -10,21 +10,26 @@
 </head>
 <body>
     <header>
-        
         <a href="{% url 'restaurant_list' %}" class="btn btn-create">View Restaurants</a>
+        
         {% if user.is_authenticated %}
-            <p>Welcome, {{ user.username }}!</p>
-            <a href="{% url 'user_reservations' %}">My Reservations</a>
-            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-create">Logout</button>
-            </form>
+            <div class="auth-links">
+                <p>Welcome, {{ user.username }}!</p>
+                <a href="{% url 'user_reservations' %}" class="btn btn-create">My Reservations</a>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-create">Logout</button>
+                </form>
+            </div>
         {% else %}
-            <a href="{% url 'login' %}" class="btn btn-create">Login</a>
-    
-            <a href="{% url 'register' %}" class="btn btn-create">Register</a>
+            <div class="auth-links">
+                <a href="{% url 'login' %}" class="btn btn-create">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-create">Register</a>
+            </div>
         {% endif %}
     </header>
+    
+    
     <main>
         {% block content %}
         {% endblock %}
