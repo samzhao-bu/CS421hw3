@@ -2,23 +2,32 @@
 
 {% block content %}
 <h1>Available Times at {{ restaurant.restaurant_name }}</h1>
+
+<!-- Date Filter Form -->
+<form method="get" action="">
+    <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}" required>
+    <input type="time" name="selected_time" value="{{ request.GET.selected_time|default:'' }}" required>
+    <button type="submit">Filter by Date and Time</button>
+</form>
+
 {% if available_times_forms %}
     {% for item in available_times_forms %}
-        <form method="post">
-            {% csrf_token %}
-            {{ item.form.number_of_seats.as_hidden }}
-            <input type="hidden" name="available_time_id" value="{{ item.time.id }}">
-            <p>{{ item.time.available_time }} - {{ item.time.seats_available }} seats available</p>
-            <button type="submit">Book Now</button>
-            {% if item.form.errors %}
-                <div class="form-errors">
-                    {{ item.form.errors }}
-                </div>
-            {% endif %}
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        {{ item.form.number_of_seats.as_hidden }}
+        <input type="hidden" name="available_time_id" value="{{ item.time.id }}">
+        <p>{{ item.time.available_time }} - {{ item.time.seats_available }} seats available</p>
+        <button type="submit">Book Now</button>
+        {% if item.form.errors %}
+            <div class="form-errors">
+                {{ item.form.errors }}
+            </div>
+        {% endif %}
+    </form>
     {% endfor %}
 {% else %}
     <p>No available times.</p>
 {% endif %}
 {% endblock %}
+
 

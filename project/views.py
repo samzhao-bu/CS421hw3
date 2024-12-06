@@ -13,6 +13,9 @@ from .models import Reservation
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_time
+import datetime
+from datetime import timedelta 
 
 
 
@@ -28,16 +31,37 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
         return reverse('login') 
 
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        times = AvailableTime.objects.filter(restaurant=self.object, seats_available__gt=0, is_reserved=False).order_by('available_time')
-        print("Available times:", times) 
+        selected_date = self.request.GET.get('selected_date')
+        selected_time = self.request.GET.get('selected_time')
+
+        if selected_date and selected_time:
+            selected_date = parse_date(selected_date)
+            selected_time = parse_time(selected_time)
+            selected_datetime = datetime.datetime.combine(selected_date, selected_time)
+
+            # Round down to the nearest hour if necessary
+            selected_datetime = selected_datetime.replace(minute=0, second=0, microsecond=0)
+
+            # Filter times within an hour range of selected time
+            start_time = selected_datetime
+            end_time = start_time + timedelta(hours=1)
+
+            times = AvailableTime.objects.filter(
+                restaurant=self.object,
+                seats_available__gt=0,
+                is_reserved=False,
+                available_time__range=(start_time, end_time)
+            ).order_by('available_time')
+        else:
+            times = AvailableTime.objects.none()  # Return no times if date or time not selected
+
         context['available_times_forms'] = [
             {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
         ]
         return context
-
+    
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = AvailableTimeForm(request.POST)
