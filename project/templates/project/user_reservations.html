@@ -7,8 +7,6 @@
 <li>
     Reservation at {{ reservation.available_time.restaurant.restaurant_name }}
     on {{ reservation.available_time.available_time|date:"Y-m-d H:i" }}
-    for {{ reservation.number_of_seats }} seats.
-    <!-- Cancel Form -->
     <form action="{% url 'cancel_reservation' pk=reservation.pk %}" method="post">
         {% csrf_token %}
         <input type="submit" value="Cancel" class="btn btn-danger">

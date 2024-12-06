@@ -5,12 +5,17 @@ from .models import Reservation, AvailableTime
 from django.core.exceptions import ValidationError
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
+    first_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=100, required=True)
+    email = forms.EmailField(required=True)
+    address = forms.CharField(max_length=255)
+    date_of_birth = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    phone_number = forms.CharField(max_length=15)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
-
+        fields = ['username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'address', 'date_of_birth', 'phone_number']
+        
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation

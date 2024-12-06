@@ -1,13 +1,36 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
-    <h1>Restaurants</h1>
-    <ul>
-        {% for restaurant in restaurants %}
-        <li>
-            <a href="{% url 'available_times' restaurant.pk %}">{{ restaurant.restaurant_name }}</a>
-        </li>
-        {% endfor %}
-    </ul>
+<h1>Restaurants</h1>
+
+<!-- Category Links -->
+<p>Categories:</p>
+<ul>
+    {% for value, name in category_choices %}
+        <li><a href="?category={{ value }}">{{ name }}</a></li>
+    {% endfor %}
+</ul>
+
+<!-- Search Form -->
+<form method="get" action="">
+    <input type="text" name="search_name" placeholder="Search by restaurant name..." value="{{ request.GET.search_name|default:'' }}">
+    <button type="submit">Search</button>
+</form>
+
+<!-- List Restaurants -->
+<ul>
+    {% for restaurant in restaurants %}
+    <li>
+        <a href="{% url 'available_times' restaurant.pk %}">
+            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.restaurant_name }}" style="width:100px; height:auto;">
+        </a>
+        <h3>{{ restaurant.restaurant_name }}</h3>
+        <p>{{ restaurant.description }}</p>
+        <p>Category: {{ restaurant.get_category_display }}</p>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
+
+
 

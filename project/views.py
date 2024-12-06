@@ -4,14 +4,16 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, redirect
 from django.shortcuts import render, get_object_or_404
-from .models import Restaurant, AvailableTime
+from .models import Restaurant, AvailableTime, Customer
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import UserRegisterForm, ReservationForm,AvailableTimeForm
 from .models import Reservation
+from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+
 
 
 
@@ -21,17 +23,20 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
     template_name = 'project/available_times.html'
     context_object_name = 'restaurant'
 
+    def get_login_url(self) -> str:
+        '''return the URL required for login'''
+        return reverse('login') 
+
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        times = AvailableTime.objects.filter(restaurant=self.object, seats_available__gt=0).order_by('available_time')
-        print("Available times:", times)  # Debugging statement
+        times = AvailableTime.objects.filter(restaurant=self.object, seats_available__gt=0, is_reserved=False).order_by('available_time')
+        print("Available times:", times) 
         context['available_times_forms'] = [
             {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
         ]
         return context
-
-
-
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -42,6 +47,10 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
             available_time_id = request.POST.get('available_time_id')
             if available_time_id:
                 reservation.available_time = get_object_or_404(AvailableTime, id=available_time_id)
+                if reservation.available_time.is_reserved:
+                    return HttpResponse("This time is no longer available.", status=400)
+                reservation.available_time.is_reserved = True
+                reservation.available_time.save()
                 reservation.save()
                 return redirect('user_reservations')
             else:
@@ -63,7 +72,8 @@ class MakeReservationView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         reservation = form.save(commit=False)
         reservation.customer = self.request.user.customer
-        reservation.available_time.seats_available -= reservation.number_of_seats
+        # reservation.available_time.seats_available -= reservation.number_of_seats
+        reservation.available_time.seats_available -= 0
         reservation.available_time.save()
         reservation.save()
         return super().form_valid(form)
@@ -76,13 +86,23 @@ class CancelReservationView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return super().get_queryset().filter(customer__user=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
-        response = super().delete(request, *args, **kwargs)
-        reservation = self.get_object()
-        available_time = reservation.available_time
-        available_time.is_reserved = False
-        available_time.save()
+    def form_valid(self, form):
+        # Start a transaction to ensure database integrity
+        with transaction.atomic():
+            # Get the reservation object before it's deleted
+            reservation = self.get_object()
+            available_time = reservation.available_time
+
+            # Call the super to perform the actual deletion
+            response = super().form_valid(form)
+
+            # Update the available time to mark it as not reserved
+            available_time.is_reserved = False
+            available_time.seats_available += 1
+            available_time.save()
+
         return response
+
 
 class UserReservationListView(LoginRequiredMixin, ListView):
     model = Reservation
@@ -97,6 +117,23 @@ class RestaurantListView(ListView):
     model = Restaurant
     template_name = 'project/restaurant_list.html'
     context_object_name = 'restaurants'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.GET.get('category')
+        name_query = self.request.GET.get('search_name')
+
+        if category:
+            queryset = queryset.filter(category=category)
+        if name_query:
+            queryset = queryset.filter(restaurant_name__icontains=name_query)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_choices'] = Restaurant.CATEGORY_CHOICES
+        return context
+    
 
 # class AvailableTimesView(LoginRequiredMixin, DetailView):
 #     def get_login_url(self) -> str:
@@ -116,11 +153,23 @@ class RestaurantListView(ListView):
     
 
 
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']  # Make sure email is set correctly
+            user.save()
+            Customer.objects.create(
+                user=user,
+                last_name=form.cleaned_data['last_name'],
+                first_name=form.cleaned_data['first_name'],
+                address=form.cleaned_data['address'],
+                email=form.cleaned_data['email'],
+                date_of_birth=form.cleaned_data['date_of_birth'],
+                phone_number=form.cleaned_data['phone_number']
+            )
             login(request, user)
             return redirect('restaurant_list')
     else:

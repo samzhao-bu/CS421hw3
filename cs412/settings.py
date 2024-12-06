@@ -66,7 +66,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             #### NOTE THIS ADDTION ####
-            'string_if_invalid': 'WARNING: {{%s}} is not a valid context variable.',
+            # 'string_if_invalid': 'WARNING: {{%s}} is not a valid context variable.',
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
