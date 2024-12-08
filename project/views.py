@@ -221,13 +221,11 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
         if hasattr(self, 'object') and self.object is not None:
             return reverse('available_times', kwargs={'pk': self.object.restaurant.pk})
         else:
-            # Handle the case where self.object is not set
-            return reverse('home')  # Redirect to a default URL if object is not available
+            return reverse('restaurant_list') 
 
 
    
     def dispatch(self, request, *args, **kwargs):
-        # Check if the user has already left a review for this restaurant
         if Review.objects.filter(restaurant_id=self.kwargs['pk'], customer=request.user).exists():
             return HttpResponseRedirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)

@@ -4,15 +4,20 @@
 <h2>Add a Review for {{ restaurant.restaurant_name }}</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.text }}
-    <div class="rating">
-        {% for star in "54321"|make_list %}
-        <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}" required {% if form.rating.value|stringformat:"s" == star %}checked{% endif %}/>
-        <label for="star{{ star }}" title="{{ star }} star">&#9733;</label>
-        {% endfor %}
+    <div class="review-container">
+        <textarea name="text" cols="40" rows="10" required id="id_text" placeholder="Your review here..."></textarea>
+
+        <div class="rating">
+            {% for star in "54321"|make_list %} <!-- Note: Reversing the order here -->
+            <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}" required {% if form.rating.value|stringformat:"s" == star %}checked{% endif %}/>
+            <label for="star{{ star }}" title="{{ star }} star">&#9733;</label>
+            {% endfor %}
+        </div>
+        
     </div>
     <button type="submit">Submit Review</button>
 </form>
+
 
 
 

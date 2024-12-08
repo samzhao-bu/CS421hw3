@@ -466,8 +466,20 @@ h5 {
     margin-top: 20px;
 }
 
+.review-container {
+    position: relative;
+    margin: 20px 0; /* Adjust margin to suit your layout */
+}
+
+textarea {
+    width: 100%; /* Full width of the container */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
 .rating {
-    direction: rtl;  /* Right to left layout */
+    display: flex;
+    flex-direction: row-reverse; /* Reverse the order of star display */
+    justify-content: flex-end; /* Align stars to the right */
 }
 
 .rating > input {
@@ -475,13 +487,20 @@ h5 {
 }
 
 .rating > label {
-    float: right; /* Align labels to the right */
-    font-size: 30px; /* Size of stars */
     cursor: pointer;
-    color: #ccc; /* Default color of stars */
+    font-size: 30px; /* Size of stars */
+    color: #ccc; /* Default color for unselected stars */
 }
 
-.rating > input:checked ~ label {
-    color: #ffc700; /* Highlight color for selected stars */
+.rating > input:checked ~ label,
+.rating > input:checked + label {
+    color: #ffc700; /* Color for selected stars */
 }
+
+.rating > label:hover,
+.rating > input:hover ~ label,
+.rating > input:hover + label {
+    color: #ffdb4d; /* Hover color */
+}
+
 
