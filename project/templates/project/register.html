@@ -1,15 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
+{% extends 'project/base.html' %}
+
+{% block content %}
 <body>
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
+    <div class="registration-form-section">
+        <h5>Register</h5>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+        
+        <hr>
+        <p class="registration-create-profile">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+    </div>
 </body>
-</html>
+{% endblock %}

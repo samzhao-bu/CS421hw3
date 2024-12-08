@@ -10,17 +10,18 @@
             </a>
             <div class="restaurant-info">
                 <h2>{{ restaurant.restaurant_name }}</h2>
-                <p class="reviews">{{ restaurant.reviews_count }} reviews - {{ restaurant.rating }} stars</p>
+                <!-- <p class="reviews">{{ restaurant.reviews_count }} reviews - {{ restaurant.rating }} stars</p> -->
                 <p class="description">{{ restaurant.description }}</p>
             </div>
         </div>
         {% endfor %}
     </div>
+
     <div class="map-or-categories">
         <h3>Categories</h3>
         <ul>
             {% for value, name in category_choices %}
-            <li><a href="?category={{ value }}">{{ name }}</a></li>
+            <li><a href="?category={{ value }}{% if search_name %}&search_name={{ search_name }}{% endif %}">{{ name }}</a></li>
             {% endfor %}
         </ul>
     </div>

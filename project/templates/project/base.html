@@ -27,6 +27,14 @@
                 <a href="{% url 'register' %}" class="btn btn-create">Register</a>
             </div>
         {% endif %}
+
+        <!-- Search Form -->
+        <div class="search-form">
+            <form method="get" action="">
+                <input type="text" name="search_name" value="{{ search_name }}" placeholder="Search by restaurant name" />
+                <button type="submit" class="btn">Search</button>
+            </form>
+        </div>
     </header>
     
     

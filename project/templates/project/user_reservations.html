@@ -1,20 +1,23 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
-<h2>My Reservations</h2>
-<ul>
-    {% for reservation in reservations %}
-<li>
-    Reservation at {{ reservation.available_time.restaurant.restaurant_name }}
-    on {{ reservation.available_time.available_time|date:"Y-m-d H:i" }}
-    <form action="{% url 'cancel_reservation' pk=reservation.pk %}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Cancel" class="btn btn-danger">
-    </form>
-</li>
-{% empty %}
-<li>You have no reservations.</li>
-{% endfor %}
-
-</ul>
+<div class="my-reservations-section">
+    <h2>My Reservations</h2>
+    <ul>
+        {% for reservation in reservations %}
+        <li>
+            <div class="reservation-details">
+                Reservation at <strong>{{ reservation.available_time.restaurant.restaurant_name }}</strong>
+                on {{ reservation.available_time.available_time|date:"Y-m-d H:i" }}
+            </div>
+            <form action="{% url 'cancel_reservation' pk=reservation.pk %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Cancel" class="btn-danger">
+            </form>
+        </li>
+        {% empty %}
+        <li class="no-reservations">You have no reservations.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

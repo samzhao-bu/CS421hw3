@@ -160,7 +160,9 @@ class RestaurantListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category_choices'] = Restaurant.CATEGORY_CHOICES
+        context['search_name'] = self.request.GET.get('search_name', '')  # Add the search query to context
         return context
+
     
 
 # class AvailableTimesView(LoginRequiredMixin, DetailView):

@@ -1,12 +1,12 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
-<h1>Available Times at {{ restaurant.restaurant_name }}</h1>
+<h1 class="page-title">Available Reservation Times at {{ restaurant.restaurant_name }}</h1>
 
 <!-- Date Filter Form -->
-<form method="get" action="">
-    <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}">
-    <select name="selected_time">
+<form method="get" action="" class="filter-form">
+    <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}" class="filter-input">
+    <select name="selected_time" class="filter-input">
         {% for hour in hours_list %}
         <option value="{{ hour }}" {% if request.GET.selected_time == hour %}selected{% endif %}>
             {% with hour|slice:":2" as hour_int %}
@@ -20,19 +20,19 @@
         {% endfor %}
     </select>
     
-    
-    
-    <button type="submit">Filter by Date and Time</button>
+    <button type="submit" class="filter-button">Filter by Date and Time</button>
 </form>
 
 {% if available_times_forms %}
     {% for item in available_times_forms %}
-    <form method="post">
+    <form method="post" class="reservation-form">
         {% csrf_token %}
         {{ item.form.number_of_seats.as_hidden }}
         <input type="hidden" name="available_time_id" value="{{ item.time.id }}">
-        <p>{{ item.time.available_time|time:"g:i A" }} - {{ item.time.seats_available }} seats available</p>
-        <button type="submit">Book Now</button>
+        <div class="reservation-time">
+            <p>{{ item.time.available_time|time:"g:i A" }} - {{ item.time.seats_available }} seats available</p>
+        </div>
+        <button type="submit" class="book-button">Book Now</button>
         {% if item.form.errors %}
             <div class="form-errors">
                 {{ item.form.errors }}
@@ -41,8 +41,12 @@
     </form>
     {% endfor %}
 {% else %}
-    <p>No available times.</p>
+    <div class="no-available-times">
+        <p>No available times.</p>
+    </div>
 {% endif %}
+
 {% endblock %}
+
 
 
