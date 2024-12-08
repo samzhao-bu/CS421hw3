@@ -24,18 +24,24 @@
 
 <!-- Reviews Section -->
 <h2>Customer Reviews</h2>
-<!-- Display Average Rating -->
-{% if average_rating %}
-    <h3>Average Rating: {{ average_rating }}/5 Stars</h3>
-{% endif %}
 {% if reviews %}
-    {% for review in reviews %}
-    <div class="review">
-        <strong>{{ review.customer.username }}</strong> ({{ review.created_at|date:"Y-m-d" }}): 
-        <br>{{ review.text }} 
-        <br>Rating: {{ review.rating }} stars
+<h3>Average Rating: {{ average_rating }}</h3>
+    <div class="rating">
+        {% for _ in unfilled_stars %}
+            <span class="star empty">&#9733;</span>  
+        {% endfor %}
+        {% for _ in filled_stars %}
+            <span class="star">&#9733;</span> 
+        {% endfor %}
+
     </div>
+    {% for review in reviews %}
+        <div class="review">
+            <p><strong>Review by {{ review.customer.username }}</strong> on {{ review.created_at|date:"Y-m-d" }}</p>
+            <p>Review:{{ review.text }} Rating:{{ review.rating }}</p>  
+        </div>
     {% endfor %}
+
 {% else %}
     <p>No reviews yet.</p>
 {% endif %}
@@ -72,5 +78,3 @@
 {% endif %}
 
 {% endblock %}
-
-

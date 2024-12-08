@@ -504,3 +504,14 @@ textarea {
 }
 
 
+.star {
+    color: gold;
+      /* Color for filled stars */
+    font-size: 20px;  /* Size of the stars */
+}
+
+.star.empty {
+    color: lightgray;
+        /* Color for unfilled stars */
+}
+

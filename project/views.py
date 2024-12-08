@@ -35,40 +35,42 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Generate hours list for the time dropdown
-        hours_list = [f"{hour:02}:00" for hour in range(8, 23)]  # This is just a basic hour list (8 AM - 10 PM)
-        context['hours_list'] = hours_list
-
+        # Setup for date and time selection
         selected_date = self.request.GET.get('selected_date')
         selected_time = self.request.GET.get('selected_time')
-
         if selected_date and selected_time:
-            selected_date = parse_date(selected_date)
-            selected_time = datetime.datetime.strptime(selected_time, "%H:%M").time()  # Parse the selected time
-
-            # Combine date and time into a full datetime object
+            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
+            selected_time = datetime.datetime.strptime(selected_time, "%H:%M").time()
             start_datetime = datetime.datetime.combine(selected_date, selected_time)
-            end_datetime = start_datetime + datetime.timedelta(hours=1)  # Assuming a 1-hour slot
-
-            # Now filter available times using this datetime range
-            times = AvailableTime.objects.filter(
-                restaurant=self.object,
-                seats_available__gt=0,
-                is_reserved=False,
-                available_time__range=(start_datetime, end_datetime)
-            ).order_by('available_time')
+            end_datetime = start_datetime + datetime.timedelta(hours=1)
 
             context['available_times_forms'] = [
-                {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
+                {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})}
+                for time in AvailableTime.objects.filter(
+                    restaurant=self.object,
+                    seats_available__gt=0,
+                    is_reserved=False,
+                    available_time__range=(start_datetime, end_datetime)
+                ).order_by('available_time')
             ]
-        else:
-            context['available_times_forms'] = []
+
+        # Setup for reviews
         reviews = Review.objects.filter(restaurant=self.object)
         context['reviews'] = reviews
         context['user_review'] = reviews.filter(customer=self.request.user).first()
 
+        # Calculate stars for average rating
+        if reviews.exists():
+            average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+            filled_stars = round(average_rating)
+            unfilled_stars = 5 - filled_stars
+        else:
+            filled_stars = 0
+            unfilled_stars = 5
         average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-        context['average_rating'] = round(average_rating, 1) if average_rating else None
+        context['average_rating'] = average_rating
+        context['filled_stars'] = range(filled_stars)
+        context['unfilled_stars'] = range(unfilled_stars)
 
         return context
 
