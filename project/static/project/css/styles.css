@@ -465,3 +465,23 @@ h5 {
     color: #888;
     margin-top: 20px;
 }
+
+.rating {
+    direction: rtl;  /* Right to left layout */
+}
+
+.rating > input {
+    display: none; /* Hide radio buttons */
+}
+
+.rating > label {
+    float: right; /* Align labels to the right */
+    font-size: 30px; /* Size of stars */
+    cursor: pointer;
+    color: #ccc; /* Default color of stars */
+}
+
+.rating > input:checked ~ label {
+    color: #ffc700; /* Highlight color for selected stars */
+}
+

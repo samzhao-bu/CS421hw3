@@ -5,6 +5,7 @@ import datetime
 from django.utils import timezone
 import random 
 import datetime
+from django.conf import settings
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer')
     last_name = models.CharField(max_length=100)
@@ -141,3 +142,12 @@ def generate_available_times(seats):
     print("Optimized available times generated successfully!")
 
 
+class Review(models.Model):
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name='reviews')
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    text = models.TextField()
+    rating = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.rating} stars by {self.customer} for {self.restaurant}'

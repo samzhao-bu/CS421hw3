@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Reservation, AvailableTime
+from .models import Reservation, AvailableTime, Review
 from django.core.exceptions import ValidationError
 
 class UserRegisterForm(UserCreationForm):
@@ -15,7 +15,7 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'address', 'date_of_birth', 'phone_number']
-        
+
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
@@ -46,3 +46,13 @@ class AvailableTimeForm(forms.ModelForm):
 
 
 
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['text', 'rating']
+        
+    def clean_rating(self):
+        rating = self.cleaned_data.get('rating')
+        if rating < 0 or rating > 5:
+            raise forms.ValidationError("Rating must be between 0 and 5.")
+        return rating

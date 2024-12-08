@@ -11,19 +11,44 @@
         <option value="{{ hour }}" {% if request.GET.selected_time == hour %}selected{% endif %}>
             {% with hour|slice:":2" as hour_int %}
                 {% if hour_int|add:"0"|slice:":2" < 12 %}
-                    {{ hour_int }} : {{ hour|slice:"3:" }} AM
+                    {{ hour_int }} AM
                 {% else %}
-                    {{ hour_int }} : {{ hour|slice:"3:" }} PM
+                    {{ hour_int|add:"-12" }} PM
                 {% endif %}
             {% endwith %}
         </option>
         {% endfor %}
     </select>
-    
     <button type="submit" class="filter-button">Filter by Date and Time</button>
 </form>
 
+<!-- Reviews Section -->
+<h2>Customer Reviews</h2>
+<!-- Display Average Rating -->
+{% if average_rating %}
+    <h3>Average Rating: {{ average_rating }}/5 Stars</h3>
+{% endif %}
+{% if reviews %}
+    {% for review in reviews %}
+    <div class="review">
+        <strong>{{ review.customer.username }}</strong> ({{ review.created_at|date:"Y-m-d" }}): 
+        <br>{{ review.text }} 
+        <br>Rating: {{ review.rating }} stars
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No reviews yet.</p>
+{% endif %}
+
+{% if not user_review %}
+    <a href="{% url 'add_review' restaurant.id %}">Add your review</a>
+{% else %}
+    <p>You have already reviewed this restaurant.</p>
+{% endif %}
+
+<!-- Available Times Section -->
 {% if available_times_forms %}
+    <h2>Book a Time</h2>
     {% for item in available_times_forms %}
     <form method="post" class="reservation-form">
         {% csrf_token %}
@@ -42,11 +67,10 @@
     {% endfor %}
 {% else %}
     <div class="no-available-times">
-        <p>No available times.</p>
+        <p>No available times on selected date and time.</p>
     </div>
 {% endif %}
 
 {% endblock %}
-
 
 

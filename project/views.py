@@ -8,15 +8,16 @@ from .models import Restaurant, AvailableTime, Customer
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, ReservationForm,AvailableTimeForm
-from .models import Reservation
+from .forms import UserRegisterForm, ReservationForm,AvailableTimeForm, ReviewForm
+from .models import Reservation, Review
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_time
 import datetime
 from datetime import timedelta 
-
+from django.http import HttpResponseRedirect
+from django.db.models import Avg
 
 
 
@@ -62,6 +63,12 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
             ]
         else:
             context['available_times_forms'] = []
+        reviews = Review.objects.filter(restaurant=self.object)
+        context['reviews'] = reviews
+        context['user_review'] = reviews.filter(customer=self.request.user).first()
+
+        average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+        context['average_rating'] = round(average_rating, 1) if average_rating else None
 
         return context
 
@@ -205,3 +212,35 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'project/register.html', {'form': form})
+
+class CreateReviewView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'project/create_review.html'
+    def get_success_url(self):
+        if hasattr(self, 'object') and self.object is not None:
+            return reverse('available_times', kwargs={'pk': self.object.restaurant.pk})
+        else:
+            # Handle the case where self.object is not set
+            return reverse('home')  # Redirect to a default URL if object is not available
+
+
+   
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the user has already left a review for this restaurant
+        if Review.objects.filter(restaurant_id=self.kwargs['pk'], customer=request.user).exists():
+            return HttpResponseRedirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.customer = self.request.user  # Assigning the logged-in user directly
+        form.instance.restaurant = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
+        return super().form_valid(form)
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'restaurant' not in context:
+            context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
+        return context

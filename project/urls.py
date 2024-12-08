@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RestaurantListView, AvailableTimesView, register, UserReservationListView, MakeReservationView, CancelReservationView, UserReservationListView
+from .views import RestaurantListView, AvailableTimesView, register, UserReservationListView, MakeReservationView, CancelReservationView, UserReservationListView, CreateReviewView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 urlpatterns = [
@@ -11,4 +11,6 @@ urlpatterns = [
     path('make-reservation/', MakeReservationView.as_view(), name='make_reservation'),
     path('cancel-reservation/<int:pk>/', CancelReservationView.as_view(), name='cancel_reservation'),
     path('my-reservations/', UserReservationListView.as_view(), name='user_reservations'),
+    path('restaurants/<int:pk>/reviews/add/', CreateReviewView.as_view(), name='add_review'),
+
 ]
