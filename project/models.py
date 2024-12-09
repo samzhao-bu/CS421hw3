@@ -7,6 +7,19 @@ import random
 import datetime
 from django.conf import settings
 class Customer(models.Model):
+    """
+    Represents a customer with a one-to-one link to the User model.
+    
+    Attributes:
+        user (OneToOneField): A one-to-one link to Django's User model.
+        last_name (CharField): Customer's last name.
+        first_name (CharField): Customer's first name.
+        address (CharField): Customer's address.
+        email (EmailField): Customer's email address.
+        date_of_birth (DateField): Customer's date of birth.
+        phone_number (CharField): Customer's phone number.
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer')
     last_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
@@ -21,6 +34,18 @@ class Customer(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 class Restaurant(models.Model):
+    """
+    Represents a restaurant.
+    
+    Attributes:
+        restaurant_name (CharField): Name of the restaurant.
+        address (CharField): Address of the restaurant.
+        phone_number (CharField): Contact number of the restaurant.
+        image (ImageField): Image of the restaurant.
+        description (TextField): Description of the restaurant.
+        category (CharField): Category of the restaurant cuisine.
+    """
+
     restaurant_name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15)
@@ -39,6 +64,16 @@ class Restaurant(models.Model):
         return self.restaurant_name
 
 class AvailableTime(models.Model):
+    """
+    Represents time slots available for reservations at a restaurant.
+    
+    Attributes:
+        restaurant (ForeignKey): Link to the Restaurant model.
+        available_time (DateTimeField): Specific date and time the slot is available.
+        seats_available (IntegerField): Number of seats available for this time slot.
+        is_reserved (BooleanField): Indicates if the time slot is already reserved.
+    """
+
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     available_time = models.DateTimeField()
     seats_available = models.IntegerField()
@@ -48,6 +83,15 @@ class AvailableTime(models.Model):
         return f"{self.restaurant.restaurant_name} at {self.available_time.strftime('%Y-%m-%d %H:%M')}"
 
 class Reservation(models.Model):
+    """
+    Represents a reservation made by a customer.
+    
+    Attributes:
+        available_time (ForeignKey): Link to the AvailableTime model indicating the reserved slot.
+        customer (ForeignKey): Link to the Customer model for the customer who made the reservation.
+        number_of_seats (IntegerField): Number of seats reserved.
+    """
+
     available_time = models.ForeignKey(AvailableTime, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     number_of_seats = models.IntegerField()
@@ -143,6 +187,17 @@ def generate_available_times(seats):
 
 
 class Review(models.Model):
+    """
+    Represents a review submitted by a customer for a restaurant.
+    
+    Attributes:
+        restaurant (ForeignKey): Link to the Restaurant model the review is about.
+        customer (ForeignKey): Link to the User model who submitted the review.
+        text (TextField): The content of the review.
+        rating (IntegerField): Rating given by the customer.
+        created_at (DateTimeField): Date and time when the review was created.
+    """
+    
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name='reviews')
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()

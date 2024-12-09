@@ -16,6 +16,7 @@
             <div class="auth-links">
                 <p>Welcome, {{ user.username }}!</p>
                 <a href="{% url 'user_reservations' %}" class="btn btn-create">My Reservations</a>
+                <a href="{% url 'my-profile' %}" class="btn btn-create">Profile</a>
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-create">Logout</button>

@@ -1,9 +1,13 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Page Title -->
+<!-- Displays the title of the page, dynamically including the restaurant's name. -->
+
 <h1 class="page-title">Available Reservation Times at {{ restaurant.restaurant_name }}</h1>
 
 <!-- Date Filter Form -->
+<!-- Allows users to filter available reservation times by selecting a date and a specific time. -->
 <form method="get" action="" class="filter-form">
     <input type="date" name="selected_date" value="{{ request.GET.selected_date|default:'' }}" class="filter-input">
     <select name="selected_time" class="filter-input">
@@ -11,9 +15,9 @@
         <option value="{{ hour }}" {% if request.GET.selected_time == hour %}selected{% endif %}>
             {% with hour|slice:":2" as hour_int %}
                 {% if hour_int|add:"0"|slice:":2" < 12 %}
-                    {{ hour_int }} AM
+                    {{ hour_int }}:00
                 {% else %}
-                    {{ hour_int|add:"-12" }} PM
+                    {{ hour_int}}:00
                 {% endif %}
             {% endwith %}
         </option>
@@ -23,36 +27,46 @@
 </form>
 
 <!-- Reviews Section -->
-<h2>Customer Reviews</h2>
-{% if reviews %}
-<h3>Average Rating: {{ average_rating }}</h3>
-    <div class="rating">
-        {% for _ in unfilled_stars %}
-            <span class="star empty">&#9733;</span>  
-        {% endfor %}
-        {% for _ in filled_stars %}
-            <span class="star">&#9733;</span> 
-        {% endfor %}
-
-    </div>
-    {% for review in reviews %}
-        <div class="review">
-            <p><strong>Review by {{ review.customer.username }}</strong> on {{ review.created_at|date:"Y-m-d" }}</p>
-            <p>Review:{{ review.text }} Rating:{{ review.rating }}</p>  
+<!-- Displays customer reviews and the average rating for the restaurant. -->
+<div class="review-section">
+    <h2>Customer Reviews</h2>
+    {% if reviews %}
+        <div class="average-rating">
+            <h3>Average Rating: {{ average_rating }}</h3>
+            <div class="rating">
+                
+                {% for _ in unfilled_stars %}
+                    <span class="star empty">&#9733;</span> <!-- Unfilled star -->
+                {% endfor %}
+                {% for _ in filled_stars %}
+                    <span class="star">&#9733;</span> <!-- Filled star -->
+                {% endfor %}
+            </div>
         </div>
-    {% endfor %}
 
-{% else %}
-    <p>No reviews yet.</p>
-{% endif %}
+        {% for review in reviews %}
+            <div class="review">
+                <div class="review-header">
+                    <strong>{{ review.customer.username }}</strong>
+                    <span>{{ review.created_at|date:"Y-m-d" }}</span>
+                </div>
+                <p class="review-text">{{ review.text }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="no-reviews">No reviews yet. Be the first to review!</p>
+    {% endif %}
 
-{% if not user_review %}
-    <a href="{% url 'add_review' restaurant.id %}">Add your review</a>
-{% else %}
-    <p>You have already reviewed this restaurant.</p>
-{% endif %}
+    {% if not user_review %}
+        <a href="{% url 'add_review' restaurant.id %}" class="add-review-link">Add Your Review</a>
+    {% else %}
+        <p class="add-review-link">You have already reviewed this restaurant.</p>
+    {% endif %}
+</div>
+
 
 <!-- Available Times Section -->
+<!-- Lists available reservation times based on the selected date and time, allowing users to book a reservation. -->
 {% if available_times_forms %}
     <h2>Book a Time</h2>
     {% for item in available_times_forms %}

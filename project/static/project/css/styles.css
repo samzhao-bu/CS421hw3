@@ -515,3 +515,276 @@ textarea {
         /* Color for unfilled stars */
 }
 
+/* Review Section Container */
+.review-section {
+    background-color: #f5f5f5; /* Subtle background for the review section */
+    padding: 30px;            /* Ample padding around the section */
+    border-radius: 10px;      /* Soft rounded corners for a polished look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 20px 0;
+}
+
+/* Section Title */
+.review-section h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;              /* Dark text for contrast */
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;      /* Slight spacing for elegance */
+}
+
+/* Average Rating Display */
+.review-section .average-rating {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.average-rating .rating {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.average-rating .rating .star {
+    font-size: 24px;
+    color: gold;
+    margin-right: 3px;
+}
+
+.average-rating .rating .star.empty {
+    color: #ccc;
+}
+
+/* Individual Review Styling */
+.review {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* Light border for separation */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    transition: box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.review:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Highlight on hover */
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.review-header strong {
+    font-size: 1.1rem;
+    color: #007bff; /* Brand color for usernames */
+}
+
+.review-header span {
+    font-size: 0.9rem;
+    color: #666; /* Subtle text color for date */
+}
+
+.review-text {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.review-rating .rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.review-rating .rating .star {
+    font-size: 18px;
+    color: gold;
+}
+
+.review-rating .rating .star.empty {
+    color: #ccc;
+}
+
+/* Call-to-Action Link */
+.add-review-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.add-review-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+    
+/* Enhanced Button Styles */
+button, input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+button:active, input[type="submit"]:active {
+    background-color: #004085;
+    transform: scale(0.98); /* Slight shrink effect */
+}
+
+/* Error Messages Styling */
+.filter-error, .form-errors {
+    color: #d9534f;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+/* Placeholder Styling */
+textarea::placeholder, input::placeholder {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Form Field Focus Effects */
+textarea:focus, input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Adjust Review Star Sizes for Larger Screens */
+@media (min-width: 1024px) {
+    .rating > label {
+        font-size: 40px; /* Larger stars for bigger screens */
+    }
+
+    .review-section h2 {
+        font-size: 2.5rem; /* Larger section title for bigger screens */
+    }
+}
+
+/* Responsive Enhancements for Review Section */
+@media (max-width: 768px) {
+    .review {
+        padding: 15px;
+    }
+
+    .review-header strong {
+        font-size: 1rem;
+    }
+
+    .review-header span {
+        font-size: 0.8rem;
+    }
+
+    .review-text {
+        font-size: 0.9rem;
+    }
+
+    .rating > label {
+        font-size: 25px;
+    }
+}
+
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-container h2 {
+    color: #333;
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.profile-info {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.profile-info p {
+    margin: 10px 0;
+}
+
+.profile-info p strong {
+    color: #333;
+    font-weight: bold;
+}
+
+.profile-update-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.profile-update-container h2 {
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Adds padding and border to the element's total width and height */
+}
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}

@@ -18,11 +18,22 @@ import datetime
 from datetime import timedelta 
 from django.http import HttpResponseRedirect
 from django.db.models import Avg
-
+from django.views.generic import TemplateView
+from django.views.generic import UpdateView
+from .forms import CustomerProfileForm
 
 
 
 class AvailableTimesView(LoginRequiredMixin, DetailView):
+    """
+    Displays available time slots for a restaurant for users to make reservations.
+
+    Attributes:
+        model (Model): Django model, Restaurant, associated with the view.
+        template_name (str): Path to the HTML template used to render the view.
+        context_object_name (str): Context name used in the template to refer to the object.
+    """
+
     model = Restaurant
     template_name = 'project/available_times.html'
     context_object_name = 'restaurant'
@@ -33,27 +44,42 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
 
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        """
+        Extends the base implementation to add additional context for the template.
 
-        # Setup for date and time selection
+        Generates a list of hours for the dropdown and filters available times based on the user's date and time selection.
+
+        Returns:
+            dict: Context dictionary.
+        """
+
+        context = super().get_context_data(**kwargs)
+        # Generate hours list for the time dropdown
+        hours_list = [f"{hour:02}:00" for hour in range(8, 23)]  # This is just a basic hour list (8 AM - 10 PM)
+        context['hours_list'] = hours_list
         selected_date = self.request.GET.get('selected_date')
         selected_time = self.request.GET.get('selected_time')
+
         if selected_date and selected_time:
-            selected_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date()
-            selected_time = datetime.datetime.strptime(selected_time, "%H:%M").time()
+            selected_date = parse_date(selected_date)
+            selected_time = datetime.datetime.strptime(selected_time, "%H:%M").time()  # Parse the selected time
+
+            # Combine date and time into a full datetime object
             start_datetime = datetime.datetime.combine(selected_date, selected_time)
-            end_datetime = start_datetime + datetime.timedelta(hours=1)
+            end_datetime = start_datetime + datetime.timedelta(hours=1)  # Assuming a 1-hour slot
 
+            # Now filter available times using this datetime range
+            times = AvailableTime.objects.filter(
+                restaurant=self.object,
+                seats_available__gt=0,
+                is_reserved=False,
+                available_time__range=(start_datetime, end_datetime)
+            ).order_by('available_time')
             context['available_times_forms'] = [
-                {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})}
-                for time in AvailableTime.objects.filter(
-                    restaurant=self.object,
-                    seats_available__gt=0,
-                    is_reserved=False,
-                    available_time__range=(start_datetime, end_datetime)
-                ).order_by('available_time')
+                {'time': time, 'form': AvailableTimeForm(initial={'number_of_seats': 1})} for time in times
             ]
-
+        else:
+            context['available_times_forms'] = []
         # Setup for reviews
         reviews = Review.objects.filter(restaurant=self.object)
         context['reviews'] = reviews
@@ -76,6 +102,18 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
 
         
     def post(self, request, *args, **kwargs):
+        """
+        Handles POST request for making a reservation. Validates the form and updates database accordingly.
+
+        Args:
+            request (HttpRequest): The request object containing POST data.
+            *args: Variable arguments.
+            **kwargs: Keyword arguments.
+
+        Returns:
+            HttpResponse or HttpResponseRedirect: Redirects to user reservations on success or renders the form with errors.
+        """
+
         self.object = self.get_object()
         form = AvailableTimeForm(request.POST)
         if form.is_valid():
@@ -101,12 +139,32 @@ class AvailableTimesView(LoginRequiredMixin, DetailView):
 
 
 class MakeReservationView(LoginRequiredMixin, CreateView):
+    
+    """
+    Handles the creation of new reservations through a form submission for authenticated users.
+
+    Attributes:
+        model (Model): Django model, Reservation, associated with the view.
+        form_class (Form): Form class, ReservationForm, used for creating a reservation.
+        template_name (str): Path to the HTML template used to render the view.
+        success_url (str): URL to redirect to after successfully creating a reservation.
+    """
     model = Reservation
     form_class = ReservationForm
     template_name = 'project/make_reservation.html'
     success_url = reverse_lazy('user_reservations')
 
     def form_valid(self, form):
+        """
+        Extends the form_valid method to add custom handling, ensuring that the reservation details are correct and the associated AvailableTime is updated.
+
+        Args:
+            form (Form): The validated form instance.
+
+        Returns:
+            HttpResponseRedirect: Redirects to the success URL defined for the view.
+        """
+
         reservation = form.save(commit=False)
         reservation.customer = self.request.user.customer
         # reservation.available_time.seats_available -= reservation.number_of_seats
@@ -116,14 +174,40 @@ class MakeReservationView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class CancelReservationView(LoginRequiredMixin, DeleteView):
+    """
+    Handles the deletion of reservations for authenticated users, ensuring database integrity with transactions.
+
+    Attributes:
+        model (Model): Django model, Reservation, associated with the view.
+        template_name (str): Path to the HTML template used to confirm the deletion.
+        success_url (str): URL to redirect to after successfully deleting a reservation.
+    """
+
     model = Reservation
     template_name = 'project/confirm_cancel.html'
     success_url = reverse_lazy('user_reservations')
 
     def get_queryset(self):
+        """
+        Filters the queryset to only include reservations of the currently logged-in user.
+
+        Returns:
+            QuerySet: Filtered queryset.
+        """
         return super().get_queryset().filter(customer__user=self.request.user)
 
     def form_valid(self, form):
+        """
+        Extends the form_valid method to handle reservation deletion with transactional integrity, 
+        and to update the associated AvailableTime object.
+
+        Args:
+            form (Form): The form instance, not typically used in DeleteView.
+
+        Returns:
+            HttpResponseRedirect: Redirects to the success URL defined for the view.
+        """
+
         # Start a transaction to ensure database integrity
         with transaction.atomic():
             # Get the reservation object before it's deleted
@@ -142,20 +226,53 @@ class CancelReservationView(LoginRequiredMixin, DeleteView):
 
 
 class UserReservationListView(LoginRequiredMixin, ListView):
+    """
+    Displays a list of reservations for the currently logged-in user.
+
+    Attributes:
+        model (Model): Django model, Reservation, associated with the view.
+        template_name (str): Path to the HTML template used to render the list.
+        context_object_name (str): Name of the context object used in the template.
+    """
+
     model = Reservation
     template_name = 'project/user_reservations.html'
     context_object_name = 'reservations'
 
     def get_queryset(self):
+        """
+        Filters the queryset to only include reservations of the currently logged-in user's customer account.
+
+        Returns:
+            QuerySet: Filtered queryset sorted by reservation time in descending order.
+        """
+
         customer = self.request.user.customer
         return Reservation.objects.filter(customer=customer).order_by('-available_time__available_time')
 
 class RestaurantListView(ListView):
+    """
+    Displays a list of restaurants, optionally filtered by category or search query.
+
+    Attributes:
+        model (Model): Django model, Restaurant, associated with the view.
+        template_name (str): Path to the HTML template used to render the list.
+        context_object_name (str): Name of the context object used in the template.
+    """
+
     model = Restaurant
     template_name = 'project/restaurant_list.html'
     context_object_name = 'restaurants'
 
     def get_queryset(self):
+        """
+        Optionally filters the queryset based on category or a search term provided by the user.
+
+        Returns:
+            QuerySet: The filtered or unfiltered queryset.
+        """
+
+
         queryset = super().get_queryset()
         category = self.request.GET.get('category')
         name_query = self.request.GET.get('search_name')
@@ -167,28 +284,20 @@ class RestaurantListView(ListView):
         return queryset
     
     def get_context_data(self, **kwargs):
+        """
+        Extends base implementation to add additional context for the template.
+
+        Adds form options and current search terms to the context.
+
+        Returns:
+            dict: Context dictionary with additional search-related data.
+        """
+
         context = super().get_context_data(**kwargs)
         context['category_choices'] = Restaurant.CATEGORY_CHOICES
         context['search_name'] = self.request.GET.get('search_name', '')  # Add the search query to context
         return context
 
-    
-
-# class AvailableTimesView(LoginRequiredMixin, DetailView):
-#     def get_login_url(self) -> str:
-#         '''return the URL required for login'''
-#         return reverse('login') 
-    
-
-#     model = Restaurant
-#     template_name = 'project/available_times.html'
-#     context_object_name = 'restaurant'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         restaurant = self.get_object()
-#         context['times'] = AvailableTime.objects.filter(restaurant=restaurant).order_by('available_time')
-#         return context
     
 
 
@@ -244,3 +353,27 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
         if 'restaurant' not in context:
             context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
         return context
+    
+
+class MyProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'project/my_profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            customer = self.request.user.customer  # Access the customer profile linked to the user
+        except Customer.DoesNotExist:
+            customer = None  # Handle case where no customer profile exists
+        context['customer'] = customer
+        return context
+
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    model = Customer
+    form_class = CustomerProfileForm
+    template_name = 'project/update_profile.html'
+    
+    def get_object(self):
+        return self.request.user.customer
+    
+    def get_success_url(self):
+        return reverse_lazy('my-profile')  # Redirect to the profile page after update
