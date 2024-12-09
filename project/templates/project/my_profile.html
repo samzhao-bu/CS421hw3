@@ -1,18 +1,35 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Profile Container -->
+<!-- This section displays the user's profile information in a formatted manner. -->
+
 <div class="profile-container">
-    <h2>My Profile</h2>
+    <h2>My Profile</h2><!-- Title for the profile section -->
+
+    <!-- Conditional Display of Profile Information -->
     {% if customer %}
+        <!-- Profile Info Section -->
+        <!-- Displays various attributes of the customer's profile if available -->
         <div class="profile-info">
             <p><strong>Name:</strong> {{ customer.first_name }} {{ customer.last_name }}</p>
+            <!-- Displays the customer's first and last name -->
             <p><strong>Email:</strong> {{ customer.email }}</p>
+            <!-- Displays the customer's email -->
             <p><strong>Address:</strong> {{ customer.address }}</p>
+            <!-- Displays the customer's address -->
             <p><strong>Phone Number:</strong> {{ customer.phone_number }}</p>
+            <!-- Displays the customer's phone number -->
             <p><strong>Date of Birth:</strong> {{ customer.date_of_birth|date:"Y-m-d" }}</p>
+            <!-- Displays the customer's date of birth in YYYY-MM-DD format -->
         </div>
+        <!-- Edit Profile Link -->
+        <!-- Provides a link to the page where the customer can update their profile -->
+
         <a href="{% url 'update-profile' %}">Edit Profile</a>
     {% else %}
+        <!-- Fallback Message -->
+        <!-- This message is displayed if there is no customer information available -->
         <p>No profile information available.</p>
     {% endif %}
 </div>

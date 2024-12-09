@@ -1,18 +1,37 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Section: Login Header -->
+<!-- Displays a simple header for the login page -->
+
 <h6>Login</h6>
 
+<!-- Section: Login Form -->
+<!-- Users submit their credentials via this form to log in -->
 
 <section class="login-form-section">
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
+        <!-- CSRF Token -->
+        <!-- Adds a security token to protect against CSRF attacks -->
+
         {{ form.as_p }}
+        <!-- Form Fields -->
+        <!-- Renders form fields automatically as paragraphs, provided by Django's form handling -->
+
         <input type="hidden" name="next" value="{% url 'restaurant_list' %}">
+        <!-- Hidden Field for Redirect -->
+        <!-- Specifies the page to redirect to after successful login, defaulting to the restaurant list -->
+
         <button type="submit">Login</button>
+        <!-- Submit Button -->
+        <!-- Button for submitting the form to log in -->
+
     </form>
 </section>
+<!-- Section: Registration Link -->
+<!-- Provides a link to the registration page for users who do not have an account -->
 
 <hr>
-<p class="registration-create-profile">Don't have an account yet? <a href="{% url 'register' %}">Create your profile here</a>.</p>
+<p class="registration-create-profile">Don't have an account yet? <a href="{% url 'register' %}">Create your account here</a>.</p>
 {% endblock %}

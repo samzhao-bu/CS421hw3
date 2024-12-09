@@ -1,34 +1,62 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Profile Update Container -->
+<!-- This container holds the form used for updating user profile information. -->
 <div class="profile-update-container">
-    <h2>Update My Profile</h2>
+    <h2>Update My Profile</h2> <!-- Section heading indicating the purpose of the form -->
+
+    <!-- Update Profile Form -->
+    <!-- This form is used for submitting updates to the user's profile information. -->
     <form method="post" class="profile-form">
         {% csrf_token %}
+        <!-- CSRF Token -->
+        <!-- A security feature to prevent cross-site request forgery attacks. Mandatory for all post forms in Django. -->
+
+        <!-- Form Group: First Name -->
+        <!-- This section captures the user's first name. -->
         <div class="form-group">
             <label for="id_first_name">First Name:</label>
-            {{ form.first_name }}
+            {{ form.first_name }} <!-- Django form field for first name -->
         </div>
+
+        <!-- Form Group: Last Name -->
+        <!-- This section captures the user's last name. -->
         <div class="form-group">
             <label for="id_last_name">Last Name:</label>
-            {{ form.last_name }}
+            {{ form.last_name }} <!-- Django form field for last name -->
         </div>
+
+        <!-- Form Group: Address -->
+        <!-- This section captures the user's address. -->
         <div class="form-group">
             <label for="id_address">Address:</label>
-            {{ form.address }}
+            {{ form.address }} <!-- Django form field for address -->
         </div>
+
+        <!-- Form Group: Email -->
+        <!-- This section captures the user's email address. -->
         <div class="form-group">
             <label for="id_email">Email:</label>
-            {{ form.email }}
+            {{ form.email }} <!-- Django form field for email -->
         </div>
+
+        <!-- Form Group: Date of Birth -->
+        <!-- This section captures the user's date of birth. -->
         <div class="form-group">
             <label for="id_date_of_birth">Date of Birth:</label>
-            {{ form.date_of_birth }}
+            {{ form.date_of_birth }} <!-- Django form field for date of birth -->
         </div>
+
+        <!-- Form Group: Phone Number -->
+        <!-- This section captures the user's phone number. -->
         <div class="form-group">
             <label for="id_phone_number">Phone Number:</label>
-            {{ form.phone_number }}
+            {{ form.phone_number }} <!-- Django form field for phone number -->
         </div>
+
+        <!-- Submit Button -->
+        <!-- Button for submitting the form to update the profile. -->
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

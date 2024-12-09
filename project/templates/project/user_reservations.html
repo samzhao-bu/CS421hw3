@@ -1,21 +1,37 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- My Reservations Section -->
+<!-- This section displays a list of the user's current reservations. -->
 <div class="my-reservations-section">
-    <h2>My Reservations</h2>
+    <h2>My Reservations</h2> <!-- Section title -->
+
     <ul>
+        <!-- Loop through each reservation in the 'reservations' context variable -->
         {% for reservation in reservations %}
         <li>
+            <!-- Reservation Details -->
+            <!-- Displays details about the reservation, including the restaurant name and the time of the reservation. -->
             <div class="reservation-details">
                 Reservation at <strong>{{ reservation.available_time.restaurant.restaurant_name }}</strong>
                 on {{ reservation.available_time.available_time|date:"Y-m-d H:i" }}
             </div>
+
+            <!-- Cancel Reservation Form -->
+            <!-- Form to cancel the reservation. Submits to a URL handling reservation cancellation. -->
             <form action="{% url 'cancel_reservation' pk=reservation.pk %}" method="post">
                 {% csrf_token %}
+                <!-- CSRF Token -->
+                <!-- Protects against Cross-Site Request Forgery attacks. Necessary for secure form submission. -->
+
+                <!-- Cancel Button -->
+                <!-- A button that allows the user to cancel their reservation. Styled with 'btn-danger' to denote action severity. -->
                 <input type="submit" value="Cancel" class="btn-danger">
             </form>
         </li>
         {% empty %}
+        <!-- Empty Case -->
+        <!-- Displays a message if the user has no reservations. -->
         <li class="no-reservations">You have no reservations.</li>
         {% endfor %}
     </ul>

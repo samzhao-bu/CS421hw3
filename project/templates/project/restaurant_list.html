@@ -2,27 +2,46 @@
 
 {% block content %}
 <div class="content-wrapper">
+    <!-- Restaurant Listing Section -->
+    <!-- This section dynamically lists all restaurants passed to the template via the 'restaurants' context variable. -->
     <div class="restaurant-listing">
         {% for restaurant in restaurants %}
+        <!-- Restaurant Card -->
+        <!-- Each card represents a single restaurant, displaying its image, name, and key information. -->
         <div class="restaurant-card">
             <a href="{% url 'available_times' restaurant.pk %}">
+                 <!-- Restaurant Image -->
+                <!-- Clicking the image navigates to a page showing available times for reservations. -->
                 <img src="{{ restaurant.image.url }}" alt="{{ restaurant.restaurant_name }}" class="restaurant-image">
             </a>
             <div class="restaurant-info">
                 <h2>{{ restaurant.restaurant_name }}</h2>
-                <!-- <p class="reviews">{{ restaurant.reviews_count }} reviews - {{ restaurant.rating }} stars</p> -->
+                <!-- Restaurant Info -->
+                <!-- Displays the name of the restaurant as a header. -->
                 <p class="description">{{ restaurant.description }}</p>
+                <!-- Description -->
+                <!-- Provides a brief description of the restaurant. -->
                 <p class="description">{{ restaurant.address }}</p>
+                <!-- Address -->
+                <!-- Shows the address of the restaurant. -->
+
                 <p class="description">{{ restaurant.phone_number }}</p>
+                <!-- Phone Number -->
+                <!-- Displays the contact phone number for the restaurant. -->
+
             </div>
         </div>
         {% endfor %}
     </div>
 
+    <!-- Categories Section -->
+    <!-- Lists categories which users can click to filter restaurants by type. -->
     <div class="map-or-categories">
         <h3>Categories</h3>
         <ul>
             {% for value, name in category_choices %}
+            <!-- Category Links -->
+            <!-- Each list item is a link that applies a category filter to the restaurant listing. -->
             <li><a href="?category={{ value }}{% if search_name %}&search_name={{ search_name }}{% endif %}">{{ name }}</a></li>
             {% endfor %}
         </ul>

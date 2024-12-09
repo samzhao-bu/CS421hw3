@@ -1,10 +1,24 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Review Form Section -->
+<!-- This section contains a form for adding a review to a specific restaurant -->
+
 <div class="review-form-section">
+    <!-- Title -->
+    <!-- Displays the name of the restaurant for which the review is being added -->
     <h5>Add a Review for {{ restaurant.restaurant_name }}</h5>
+    <!-- Review Form -->
+    <!-- Users submit their review and rating through this form -->
+
     <form method="post" class="review-form">
         {% csrf_token %}
+        <!-- CSRF Token -->
+        <!-- Protects against Cross-Site Request Forgery attacks -->
+
+        <!-- Review Textarea -->
+        <!-- Allows users to enter their review text -->
+
         <div class="form-group">
             <label for="id_text" class="form-label">Your Review:</label>
             <textarea name="text" id="id_text" cols="40" rows="5" required placeholder="Share your experience..." class="form-control"></textarea>
@@ -12,6 +26,9 @@
         
         <div class="form-group">
             <label class="form-label">Your Rating:</label>
+            <!-- Rating Input -->
+            <!-- Users can select a rating from 1 to 5 stars -->
+
             <div class="rating">
                 {% for star in "54321"|make_list %}
                 <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}" required {% if form.rating.value|stringformat:"s" == star %}checked{% endif %}/>
@@ -19,6 +36,8 @@
                 {% endfor %}
             </div>
         </div>
+         <!-- Submit Button -->
+        <!-- Button for submitting the review form -->
         
         <button type="submit" class="btn-submit">Submit Review</button>
     </form>

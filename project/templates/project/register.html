@@ -1,16 +1,30 @@
 {% extends 'project/base.html' %}
 
 {% block content %}
+<!-- Registration Form Section -->
+<!-- This section is dedicated to user registration, including form inputs for user details. -->
+
 <body>
+
     <div class="registration-form-section">
         <h5>Register</h5>
+        <!-- Registration Form -->
+        <!-- Method POST ensures that form data is sent securely via HTTP POST. -->
         <form method="post">
             {% csrf_token %}
+            <!-- CSRF Token -->
+            <!-- Adds a security token to protect against CSRF attacks, essential for all POST forms in Django. -->
+        
             {{ form.as_p }}
+            <!-- Form Fields -->
+            
+
             <button type="submit">Register</button>
         </form>
         
         <hr>
+        <!-- Link to Login Page -->
+        <!-- Provides a quick navigation link for users who already have an account and wish to log in. -->
         <p class="registration-create-profile">Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
     </div>
 </body>

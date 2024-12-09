@@ -6,12 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}">
+    <!-- Title -->
     <title>Restaurant Reservation System</title>
 </head>
 <body>
     <header>
+        <!-- Navigation Link -->
+        <!-- Link to view list of all restaurants -->
         <a href="{% url 'restaurant_list' %}" class="btn btn-create">View Restaurants</a>
-        
+
+        <!-- Authentication Links -->
+        <!-- Conditional display based on user authentication status -->
+
         {% if user.is_authenticated %}
             <div class="auth-links">
                 <p>Welcome, {{ user.username }}!</p>
@@ -30,6 +36,8 @@
         {% endif %}
 
         <!-- Search Form -->
+        <!-- Form for searching restaurants by name -->
+
         <div class="search-form">
             <form method="get" action="">
                 <input type="text" name="search_name" value="{{ search_name }}" placeholder="Search by restaurant name" />
@@ -38,6 +46,8 @@
         </div>
     </header>
     
+    <!-- Main Content Area -->
+    <!-- This block is overridden by other templates extending this base template -->
     
     <main>
         {% block content %}
