@@ -303,6 +303,16 @@ class RestaurantListView(ListView):
 
 
 def register(request):
+    """
+    Handles user registration and creates a corresponding customer profile.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The HTTP response object, redirect on successful registration, or render on GET or invalid form.
+    """
+
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -325,10 +335,27 @@ def register(request):
     return render(request, 'project/register.html', {'form': form})
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
+    """
+    View for creating a review for a specific restaurant by a logged-in user.
+
+    Attributes:
+        model (Model): The Review model.
+        form_class (Form): The ReviewForm to handle input data.
+        template_name (str): Path to the HTML template.
+    """
+
     model = Review
     form_class = ReviewForm
     template_name = 'project/create_review.html'
+
+
     def get_success_url(self):
+        """
+        Defines the URL to redirect to after successfully creating a review.
+
+        Returns:
+            str: URL to redirect to.
+        """
         if hasattr(self, 'object') and self.object is not None:
             return reverse('available_times', kwargs={'pk': self.object.restaurant.pk})
         else:
@@ -337,11 +364,28 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
 
    
     def dispatch(self, request, *args, **kwargs):
+        """
+        Prevents multiple reviews by the same user for the same restaurant.
+
+        Returns:
+            HttpResponse: Redirects if a review already exists, otherwise processes the request normally.
+        """
+
         if Review.objects.filter(restaurant_id=self.kwargs['pk'], customer=request.user).exists():
             return HttpResponseRedirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """
+        Assigns the restaurant and customer to the form instance before saving.
+
+        Args:
+            form (Form): The validated form.
+
+        Returns:
+            HttpResponse: Redirects to the success URL.
+        """
+
         form.instance.customer = self.request.user  # Assigning the logged-in user directly
         form.instance.restaurant = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
         return super().form_valid(form)
@@ -349,6 +393,13 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
 
 
     def get_context_data(self, **kwargs):
+        """
+        Adds restaurant data to the context.
+
+        Returns:
+            dict: The context data.
+        """
+
         context = super().get_context_data(**kwargs)
         if 'restaurant' not in context:
             context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
@@ -356,9 +407,23 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
     
 
 class MyProfileView(LoginRequiredMixin, TemplateView):
+    """
+    Displays the profile of the logged-in user.
+
+    Attributes:
+        template_name (str): Path to the HTML template.
+    """
+
     template_name = 'project/my_profile.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Adds the customer data to the context.
+
+        Returns:
+            dict: The context data.
+        """
+
         context = super().get_context_data(**kwargs)
         try:
             customer = self.request.user.customer  # Access the customer profile linked to the user
@@ -368,12 +433,35 @@ class MyProfileView(LoginRequiredMixin, TemplateView):
         return context
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    """
+    Allows users to update their profile information.
+
+    Attributes:
+        model (Model): The Customer model.
+        form_class (Form): The CustomerProfileForm.
+        template_name (str): Path to the HTML template.
+    """
+
     model = Customer
     form_class = CustomerProfileForm
     template_name = 'project/update_profile.html'
     
     def get_object(self):
+        """
+        Retrieves the Customer instance associated with the logged-in user.
+
+        Returns:
+            Customer: The Customer instance of the logged-in user.
+        """
+
         return self.request.user.customer
     
     def get_success_url(self):
+        """
+        Defines the URL to redirect to after successfully updating the profile.
+
+        Returns:
+            str: URL to redirect to.
+        """
+        
         return reverse_lazy('my-profile')  # Redirect to the profile page after update
