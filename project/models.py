@@ -1,3 +1,7 @@
+# File: views.py
+# Author: Songwen Zhao (samzhao@bu.edu)
+# Description: The models of my project
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User

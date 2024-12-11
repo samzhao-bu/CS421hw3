@@ -1,3 +1,7 @@
+# File: views.py
+# Author: Songwen Zhao (samzhao@bu.edu)
+# Description: The urls structure of my project
+
 from django.urls import path
 from .views import RestaurantListView, AvailableTimesView, register, UserReservationListView, MakeReservationView, CancelReservationView, UserReservationListView, CreateReviewView, MyProfileView, UpdateProfileView
 from django.contrib.auth.views import LoginView, LogoutView

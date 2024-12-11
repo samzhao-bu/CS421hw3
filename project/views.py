@@ -1,3 +1,8 @@
+# File: views.py
+# Author: Songwen Zhao (samzhao@bu.edu)
+# Description: The views of my project
+
+
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, DeleteView
 from django.urls import reverse_lazy
